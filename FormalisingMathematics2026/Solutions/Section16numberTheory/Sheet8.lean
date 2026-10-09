@@ -3,6 +3,7 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.NumberTheory.Wilson
@@ -49,16 +50,15 @@ theorem exists_sqrt_neg_one_of_one_mod_four
   congr 1
   rw [Nat.factorial_eq_prod_range_add_one]
   push_cast
-  conv_rhs => rw [prod_range_reflect _ (2 * n)]
-  simp only
-  have : ∀ j ∈ range (2 * n), (2 * ↑n + (2 * n - 1 - j) + 1 : ZMod (4 * n + 1)) = -(j + 1 : ZMod (4 * n + 1))
+  conv_rhs => rw [← prod_range_reflect _ (2 * n)]
+  have : ∀ j ∈ range (2 * n), (2 * ↑n + ↑(2 * n - 1 - j) + 1 : ZMod (4 * n + 1)) = -(j + 1 : ZMod (4 * n + 1))
   · intro j hj
-    rw [ZMod.eq_neg_iff_add_eq_zero]
-    push_cast
+    rw [eq_neg_iff_add_eq_zero]
+    norm_cast
     rw [show 2 * n + (2 * n - 1 - j) + 1 + (j + 1) = 4 * n + 1 by
       simp at hj; omega]
     rw [ZMod.natCast_self]
-  rw [prod_congr rfl this, prod_neg, show (-1 : ZMod (4 * n + 1)) ^ (2 * n) = 1 by
+  rw [prod_congr rfl this, prod_neg, card_range, show (-1 : ZMod (4 * n + 1)) ^ (2 * n) = 1 by
     rw [pow_mul, show (-1 : ZMod (4 * n + 1)) ^ 2 = 1 by ring, one_pow]]
   simp
 

@@ -3,6 +3,7 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 
 /-
@@ -74,7 +75,7 @@ example (S T : Finset X) (h : S ≤ T) : S.image f ≤ T.image f := by
 #synth Inter (Finset ℕ)           -- allows me to use ∩ on Finsets
 #synth Insert ℕ (Finset ℕ)        -- allows me to use insert
 #synth EmptyCollection (Finset ℕ) -- allows me to use ∅
-#synth HasSubset (Finset ℕ)       -- ⊆
+#synth LE (Finset ℕ)              -- ⊆ (on Finsets, `s ⊆ t` is notation for `s ≤ t`)
 #synth SDiff (Finset ℕ)           -- \
 #synth Singleton ℕ (Finset ℕ)     -- {x}
 

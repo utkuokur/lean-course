@@ -3,6 +3,7 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 
 namespace Section15Sheet4
@@ -31,6 +32,7 @@ which is `26*26n+26*26 = 13*13*something`
 -- The statement has subtraction in, so we use integers.
 example (n : ℕ) (hn : 0 < n) : -- remark; not going to use hn
     (169 : ℤ) ∣ 3 ^ (3 * n + 3) - 26 * n - 27 := by
+  clear hn -- else `induction` would put `0 < d →` in front of the inductive hypothesis
   induction n with
   | zero =>
     simp

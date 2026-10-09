@@ -3,6 +3,7 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Jason Kexing Ying, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
@@ -64,11 +65,9 @@ Try proving the following:
 -/
 example (S T : Set Ω) (hS : μ S ≠ ∞) (hT : MeasurableSet T) :
     μ (S ∪ T) = μ S + μ T - μ (S ∩ T) := by
-  exact measure_union_add_inter S T ▸ (ENNReal.add_sub_cancel_right (measure_ne_top μ (S ∩ T)) (μ (S ∪ T))).symm
-  -- Wait, easier:
-  rw [measure_union_add_inter S T]
+  rw [← measure_union_add_inter S hT]
   rw [ENNReal.add_sub_cancel_right]
-  exact measure_ne_top μ (S ∩ T)
+  exact measure_ne_top_of_subset Set.inter_subset_left hS
 
 /-!
 ## Measurable functions
@@ -149,19 +148,19 @@ example {f g : Ω → X} (hf : Integrable f μ) (hg : Integrable g μ) :
   integral_add hf hg
 
 example (a : X) (s : Set Ω) : ∫ _ in s, a ∂μ = (μ s).toReal • a :=
-  set_integral_const s a
+  setIntegral_const a
 
 -- Harder
 example
     {f : Ω → ℝ} (hf : Measurable f)
     (hint : Integrable f μ) (hμ : 0 < μ {ω | 0 < f ω}) :
     (0 : ℝ) < ∫ ω in {ω | 0 < f ω}, f ω ∂μ := by
-  apply set_integral_pos_of_pos_of_measure_pos
-  · exact hint.set_integrable
-  · intro x hx
-    simp at hx
-    exact hx
-  · exact hμ
+  rw [setIntegral_pos_iff_support_of_nonneg_ae]
+  · rwa [Set.inter_eq_self_of_subset_right]
+    intro x hx
+    exact ne_of_gt hx
+  · exact ae_restrict_of_forall_mem (measurableSet_lt measurable_const hf) fun x hx => le_of_lt hx
+  · exact hint.integrableOn
 
 /-!
 ## ae filter
@@ -196,7 +195,7 @@ for this is, while `∫ x in [0, ∞), sin x / x dx` is Darboux-Riemann integrab
 `∫ x in [0, ∞), |sin x / x| dx = ∞`.
 -/
 example (X : Type) [MeasurableSpace X] (μ : Measure X) : Filter X :=
-  μ.ae
+  ae μ
 
 -- say `f` and `g` are measurable functions `Ω → X`
 variable (f g : Ω → X)
@@ -239,12 +238,13 @@ example (f : ℕ → Ω → ℝ) (s : Set Ω) :=
 -- goals of the form `MeasurableSet s` and `Measurable f`
 example (s : Set Ω) (f g : Ω → ℝ) (hf : Measurable f) (hg : Measurable g)
     (hfg : ∀ ω ∈ s, f ω = g ω) : f =ᵐ[μ.restrict s] g := by
-  apply ae_restrict_of_forall
-  exact hfg
+  rw [Filter.EventuallyEq, ae_restrict_iff (measurableSet_eq_fun hf hg)]
+  exact Eventually.of_forall hfg
 
 example (f g h : Ω → ℝ)
     (h₁ : f ≤ᵐ[μ] g) (h₂ : f ≤ᵐ[μ] h) : 2 * f ≤ᵐ[μ] g + h := by
   filter_upwards [h₁, h₂] with ω hω₁ hω₂
+  simp only [Pi.mul_apply, Pi.add_apply, Pi.ofNat_apply]
   linarith
 
 example (f g : Ω → ℝ) (h : f =ᵐ[μ] g) (hg : ∀ᵐ ω ∂μ, 2 * g ω + 1 ≤ 0) :

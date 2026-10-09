@@ -3,6 +3,7 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 import Mathlib.Combinatorics.SimpleGraph.DeleteEdges
 import Mathlib.Combinatorics.SimpleGraph.Maps
@@ -94,11 +95,12 @@ inductive SQE : SQV → SQV → Prop
 def SQG : SimpleGraph SQV where
   Adj := SQE
   symm := by
+    constructor
     -- do all the cases for the two vertices and the edge
     rintro (_ | _ | _ | _) (_ | _ | _ | _) (_ | _ | _ | _ | _ | _ | _ | _)
     -- now 8 goals; find the right constructor for sqE in all cases
     repeat' constructor
-  loopless := by rintro (_ | _ | _ | _) (_ | _ | _ | _ | _ | _ | _ | _)
+  loopless := by constructor; rintro (_ | _ | _ | _) (_ | _ | _ | _ | _ | _ | _ | _)
 
 end SquareGraph
 

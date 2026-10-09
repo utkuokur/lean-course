@@ -3,8 +3,10 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
-import Mathlib.Combinatorics.SimpleGraph.Path
+import Mathlib.Combinatorics.SimpleGraph.Paths
+import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 -- paths, cycles etc in graph theory
 
 /-
@@ -118,7 +120,7 @@ example (b : G.Walk v v) : Prop :=
 -- putting them together gives a cycle iff `p` is a path and the edge from `u` to `v`
 -- is not in the edges of `p`.
 example {u v : V} (p : G.Walk v u) (h : G.Adj u v) :
-    (Walk.cons h p).IsCycle ↔ p.IsPath ∧ Sym2.mk (u, v) ∉ p.edges :=
+    (Walk.cons h p).IsCycle ↔ p.IsPath ∧ s(u, v) ∉ p.edges :=
   Walk.cons_isCycle_iff p h
 
 -- Given a walk from `v` to `w` and a vertex `u` in the support of the walk,

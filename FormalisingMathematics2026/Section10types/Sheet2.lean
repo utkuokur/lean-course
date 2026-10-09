@@ -1,3 +1,4 @@
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 
 /-
@@ -35,6 +36,9 @@ example {P : Prop} : P → P := by
 
 example {a b c : ℝ} (ha : a ≤ b) (hb : a ≤ c) : a ≤ b := by
   grw [hb]
+  -- the goal is now `c ≤ b`, which cannot be proved:
+  -- `grw` can turn a true goal into a false one
+  sorry
 
 example {n : ℕ} (h : ((n + 1 : ℕ) : ℚ) ≠ n + 1) : False := by
   norm_cast at h

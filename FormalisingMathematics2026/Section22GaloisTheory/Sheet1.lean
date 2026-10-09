@@ -3,6 +3,7 @@ Copyright (c) 2026 Thomas Browning. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Thomas Browning
 -/
+-- Modified by Utku Okur, 2026
 
 import Mathlib
 
@@ -161,14 +162,14 @@ example : IsGalois K L ↔ Algebra.IsSeparable K L ∧ Normal K L := by
   exact isGalois_iff
 
 example : IsGalois K L ↔ fixedField (⊤ : Subgroup Gal(L/K)) = ⊥ := by
-  exact IsGalois.tfae.out 0 1
+  exact IsGalois.tfae.out 1 2
 
 example : IsGalois K L ↔ Nat.card Gal(L/K) = Module.finrank K L := by
-  exact IsGalois.tfae.out 0 2
+  exact IsGalois.tfae.out 1 3
 
 example : IsGalois K L ↔
     ∃ p : K[X], p.Separable ∧ p.IsSplittingField K L := by
-  exact IsGalois.tfae.out 0 3
+  exact IsGalois.tfae.out 1 4
 
 example (F E : IntermediateField K L) :
     fixingSubgroup (F ⊔ E) = fixingSubgroup F ⊓ fixingSubgroup E := by
