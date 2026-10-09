@@ -8,6 +8,7 @@ import Mathlib.Tactic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.NumberTheory.Wilson
 import Mathlib.Data.Nat.Factorial.BigOperators
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 namespace Section15Sheet8
 

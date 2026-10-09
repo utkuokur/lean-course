@@ -1,7 +1,9 @@
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.Tactic.NormNum.Prime
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 section Section15Sheet6
 /-

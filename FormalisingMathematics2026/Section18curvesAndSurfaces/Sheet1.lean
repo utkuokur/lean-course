@@ -3,10 +3,12 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Calculus.ContDiff.Defs
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 
 /-

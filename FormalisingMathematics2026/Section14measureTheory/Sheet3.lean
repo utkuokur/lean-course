@@ -3,9 +3,11 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 -- imports all the Lean tactics
 import Mathlib.MeasureTheory.MeasurableSpace.Defs
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 /-
 
 # The extended nonnegative reals [0,∞]

@@ -5,6 +5,7 @@ Authors: Bhavik Mehta, Kevin Buzzard
 -/
 -- Modified by Utku Okur, 2026
 import Mathlib.Tactic
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 /-
 

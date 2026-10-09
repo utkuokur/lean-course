@@ -8,6 +8,7 @@ import Mathlib.Tactic
 import Mathlib.Combinatorics.SimpleGraph.DeleteEdges
 import Mathlib.Combinatorics.SimpleGraph.Maps
 import Mathlib.Combinatorics.SimpleGraph.Finite
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 namespace Section18sheet1
 

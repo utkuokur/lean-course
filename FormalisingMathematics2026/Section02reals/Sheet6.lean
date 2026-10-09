@@ -6,6 +6,7 @@ Authors: Bhavik Mehta, Kevin Buzzard
 -- Modified by Utku Okur, 2026
 import Mathlib.Tactic -- imports all the Lean tactics
 import FormalisingMathematics2026.Solutions.Section02reals.Sheet5
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 -- import a bunch of previous stuff
 
 namespace Section2sheet6

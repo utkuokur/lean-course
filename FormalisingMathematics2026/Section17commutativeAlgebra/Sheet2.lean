@@ -3,10 +3,12 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 import Mathlib.RingTheory.Noetherian.Basic
 -- theory of Noetherian rings
 import Mathlib.RingTheory.Polynomial.Basic
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 namespace Section16sheet2
 

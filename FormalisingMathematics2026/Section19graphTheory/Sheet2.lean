@@ -7,6 +7,7 @@ Authors: Bhavik Mehta, Kevin Buzzard
 import Mathlib.Tactic
 import Mathlib.Combinatorics.SimpleGraph.Paths
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 -- paths, cycles etc in graph theory
 
 /-

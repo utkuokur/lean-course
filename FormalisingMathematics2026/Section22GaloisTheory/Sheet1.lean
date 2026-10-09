@@ -6,6 +6,7 @@ Authors: Thomas Browning
 -- Modified by Utku Okur, 2026
 
 import Mathlib
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 section GroupTheory
 

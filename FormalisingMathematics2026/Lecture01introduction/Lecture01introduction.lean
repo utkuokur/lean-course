@@ -3,9 +3,11 @@ Copyright (c) 2026 Thomas Browning. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Thomas Browning, Kevin Buzzard, Bhavik Mehta
 -/
+-- Modified by Utku Okur, 2026
 module
 
 public import Mathlib.Tactic -- imports all of the tactics in mathlib
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 /-!
 # Lecture 1: Introduction

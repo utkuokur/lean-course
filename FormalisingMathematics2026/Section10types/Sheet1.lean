@@ -1,4 +1,6 @@
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 /-!
 Today we'll talk a little about the type theory of Lean. We'll talk about the three ways of making

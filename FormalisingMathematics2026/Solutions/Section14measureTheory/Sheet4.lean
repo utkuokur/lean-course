@@ -6,6 +6,7 @@ Authors: Bhavik Mehta, Jason Kexing Ying, Kevin Buzzard
 -- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 import Mathlib.MeasureTheory.Integral.Bochner.Set
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 /-
 

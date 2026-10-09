@@ -3,11 +3,13 @@ Copyright (c) 2025 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kevin Buzzard
 -/
+-- Modified by Utku Okur, 2026
 import Mathlib.Tactic
 import Mathlib.RingTheory.UniqueFactorizationDomain.Basic -- UFDs
 import Mathlib.RingTheory.PrincipalIdealDomain            -- PIDs
 import Mathlib.Algebra.MvPolynomial.CommRing
 import Mathlib.RingTheory.Polynomial.Basic                -- multivariable polynomials
+set_option linter.all false  -- comment out this line to see Mathlib's style warnings
 
 /-
 
