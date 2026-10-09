@@ -1,7 +1,4 @@
 name = "FormalisingMathematics2026"
-# build every course file on its own: exercise and solution files reuse the
-# same names, so they cannot all be imported together by the root file
-globs = ["FormalisingMathematics2026.+"]
 defaultTargets = ["FormalisingMathematics2026"]
 
 [leanOptions]
