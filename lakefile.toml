@@ -22,8 +22,8 @@ relaxedAutoImplicit = false
 
 # The following line switches on Mathlib's style linters.
 # the course files switch them off at the top
-# `weak.`: this setting comes from Mathlib, so apply it only in files that import
-# Mathlib; in other files, ignore it instead of reporting an unknown option
+# `weak.` makes this setting conditional: it takes effect in files that import
+# Mathlib, where the option exists, and is ignored in all other files
 weak.linter.mathlibStandardSet = true
 
 # ---- Dependencies ----
