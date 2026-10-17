@@ -71,6 +71,8 @@ theorem first_theorem (hP : P) (hQ : Q) (hR : R) : P := by
   -- note that `exact P` does *not* work. `P` is the proposition, `hP` is the proof.
   exact hP
 
+#print axioms first_theorem
+
 -- Same example: assume that `P` and `Q` and `R` are true, but this time
 -- give the assumptions silly names. Deduce that `P` is true.
 example (fish : P) (giraffe : Q) (dodecahedron : R) : P := by
