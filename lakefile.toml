@@ -1,24 +1,33 @@
-# ---- The package (our course) ----
+# ---- The root package, i.e. our course repo ----
 name = "FormalisingMathematics2026"
-# what plain `lake build` builds: the library defined below
+# defaultTargets is what `lake build` in the terminal builds
+# for this course, our library defined below is the only default target. 
 defaultTargets = ["FormalisingMathematics2026"]
 
-# ---- Settings for every Lean file of the package ----
+# ---- Settings that apply to every Lean file of the package ----
 [leanOptions]
+# display functions as `fun x ↦ x + 1` instead of `fun x => x + 1` (display only)
 pp.unicode.fun = true
+# a name that was never declared is an error, not a silently created new variable
 autoImplicit = false
+# only matters when autoImplicit is on; kept for safety
 relaxedAutoImplicit = false
+# switch on Mathlib's 26 style linters (the course files switch them off at the top);
+# `weak.`: do not complain that this name is unknown before Mathlib is loaded
 weak.linter.mathlibStandardSet = true
 
 # ---- Dependencies ----
+# For this course, the only direct dependency is Mathlib
 [[require]]
 name = "mathlib"
-rev = "v4.34.1"
+# version of mathlib to be used
+rev = "v4.34.1" 
+# the repo Lake downloads Mathlib from
 git = "https://github.com/leanprover-community/mathlib4.git"
 
-# ---- The library: the course files ----
+# ---- The library: the collection of all course files ----
 [[lean_lib]]
 name = "FormalisingMathematics2026"
-# build every course file on its own: exercise and solution files reuse the
-# same names, so they cannot all be imported together by the root file
+# globs builds every course file on its own, because otherwise 
+# name clashes prevent the root module from building
 globs = ["FormalisingMathematics2026.+"]
