@@ -1,19 +1,29 @@
 # ---- The root package, i.e. our course repo ----
 name = "FormalisingMathematics2026"
+
 # defaultTargets is what `lake build` in the terminal builds
 # for this course, our library defined below is the only default target. 
 defaultTargets = ["FormalisingMathematics2026"]
 
 # ---- Settings that apply to every Lean file of the package ----
 [leanOptions]
-# display functions as `fun x ↦ x + 1` instead of `fun x => x + 1` (display only)
+# display functions as `fun x ↦ x + 1` instead of `fun x => x + 1`
+# mostly for the Infoview, messages, mouse hovers
 pp.unicode.fun = true
-# a name that was never declared is an error, not a silently created new variable
+
+# a name that was never introduced before causes an error,
+# instead of silently creating a new variable
 autoImplicit = false
-# only matters when autoImplicit is on; kept for safety
+
+# When relaxedAutoImplicit is false, only one-letter names like `x`, `α`, `n₁`
+# may become automatic variables, but not long names like `Continous`.
+# This only applies if autoImplicit is on. Here it is an extra safety measure. 
 relaxedAutoImplicit = false
-# switch on Mathlib's 26 style linters (the course files switch them off at the top);
-# `weak.`: do not complain that this name is unknown before Mathlib is loaded
+
+# The following line switches on Mathlib's style linters.
+# the course files switch them off at the top
+# `weak.`: this setting comes from Mathlib, so apply it only in files that import
+# Mathlib; in other files, ignore it instead of reporting an unknown option
 weak.linter.mathlibStandardSet = true
 
 # ---- Dependencies ----
@@ -25,7 +35,9 @@ rev = "v4.34.1"
 # the repo Lake downloads Mathlib from
 git = "https://github.com/leanprover-community/mathlib4.git"
 
-# ---- The library: the collection of all course files ----
+# ---- The course library ---- 
+# The course library is the collection of all Lean files in the folder
+# FormalisingMathematics2026.
 [[lean_lib]]
 name = "FormalisingMathematics2026"
 # globs builds every course file on its own, because otherwise 
