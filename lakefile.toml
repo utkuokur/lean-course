@@ -1,5 +1,5 @@
 # ---- The root package, i.e. our course repo ----
-name = "FormalisingMathematics2026"
+name = "lean-course"
 
 # defaultTargets is what `lake build` in the terminal builds
 # for this course, our library defined below is the only default target. 
@@ -32,7 +32,7 @@ weak.linter.mathlibStandardSet = true
 name = "mathlib"
 # version of mathlib to be used
 rev = "v4.34.1" 
-# the repo Lake downloads Mathlib from
+# the repo from which Lake downloads Mathlib
 git = "https://github.com/leanprover-community/mathlib4.git"
 
 # ---- The course library ---- 

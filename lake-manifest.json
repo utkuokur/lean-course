@@ -91,6 +91,6 @@
    "inputRev": "v4.34.0",
    "inherited": true,
    "configFile": "lakefile.toml"}],
- "name": "FormalisingMathematics2026",
+ "name": "«lean-course»",
  "lakeDir": ".lake",
  "fixedToolchain": false}
