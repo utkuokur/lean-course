@@ -1,17 +1,22 @@
+# ---- The package (our course) ----
 name = "FormalisingMathematics2026"
+# what plain `lake build` builds: the library defined below
 defaultTargets = ["FormalisingMathematics2026"]
 
+# ---- Settings for every Lean file of the package ----
 [leanOptions]
 pp.unicode.fun = true
 autoImplicit = false
 relaxedAutoImplicit = false
 weak.linter.mathlibStandardSet = true
 
+# ---- Dependencies ----
 [[require]]
 name = "mathlib"
 rev = "v4.34.1"
 git = "https://github.com/leanprover-community/mathlib4.git"
 
+# ---- The library: the course files ----
 [[lean_lib]]
 name = "FormalisingMathematics2026"
 # build every course file on its own: exercise and solution files reuse the
