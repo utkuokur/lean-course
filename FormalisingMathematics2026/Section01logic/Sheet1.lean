@@ -67,7 +67,7 @@ variable (P Q R : Prop)
 
 -- Here are some examples of `intro`, `exact` and `apply` being used.
 -- Assume that `P` and `Q` and `R` are all true. Deduce that `P` is true.
-example (hP : P) (hQ : Q) (hR : R) : P := by
+theorem first_theorem (hP : P) (hQ : Q) (hR : R) : P := by
   -- note that `exact P` does *not* work. `P` is the proposition, `hP` is the proof.
   exact hP
 
