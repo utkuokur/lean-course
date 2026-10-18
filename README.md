@@ -4,4 +4,4 @@ Repository for Winter 2026 course on formalising mathematics in Lean at TUBAF.
 
 ## Onboarding notes
 
-Onboarding notes found are [here](onboarding_notes/Onboarding.pdf). Also found on OPAL website: [OPAL](https://bildungsportal.sachsen.de/opal/) The onboarding notes are © Utku Okur, CC BY 4.0.
+Onboarding notes found are [here](onboarding_notes/Onboarding.pdf). Also found on OPAL website: [OPAL](https://bildungsportal.sachsen.de/opal/auth/RepositoryEntry/56711118848) The onboarding notes are © Utku Okur, CC BY 4.0.
