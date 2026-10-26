@@ -85,12 +85,21 @@ example : (((P → Q) → R) → (P → (Q → R))) ∧
     exact hQ
     -- sorry
 
-  · -- use P = False and R = False
+  · --impossible
+    -- use P = False and R = False
     intro h
     -- specialize (P:= False) at h
 
+
     sorry
 
+example : (((P → Q) → R) → (P → (Q → R))) := by
+  intro h₁
+  intro hP
+  intro hQ
+  apply h₁
+  intro hP'
+  exact hQ
 
 /-
 And (`∧`) and or (`∨`) are associative mathematically, but in Lean this
