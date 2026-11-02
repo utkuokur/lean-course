@@ -60,35 +60,25 @@ example (P Q R : Prop) (hPQ : P → Q) (hQR : Q → R) (hP : P) : R := by
   exact hPQ hP
 
 /-
-## `positivity`
+## `congr`
 
-**Summary.** `positivity` proves goals of exactly three forms: `0 ≤ e`, `0 < e` and
-`e ≠ 0` (also written `e ≥ 0`, `e > 0`). It either proves the goal completely or fails.
+**Summary.** `congr` turns a goal of the form `f a = f b` into the goal `a = b`.
+If several arguments differ, as in `f a c = f b d`, we get one goal for each of them.
+`congr` goes as deep as it can, and it tries to close each new goal by itself,
+with `rfl` and `assumption`. So `congr` may finish the proof, and then no further tactic
+is needed.
 
-It works by taking the expression `e` apart, following how `e` is built:
-for `e = a + b`, `a * b`, `a ^ n`, `a / b`, `|a|`, ..., it first proves that the pieces
-`a` and `b` are nonnegative, positive or nonzero, and then combines these facts with
-rules such as "positive + nonnegative is positive" or "a square is nonnegative".
-For the smallest pieces (numbers and variables) it uses:
-* `norm_num` for numbers, e.g. `0 < 37`,
-* the type, e.g. every natural number `n : ℕ` satisfies `0 ≤ n`,
-* hypotheses about the piece, e.g. `hx : 0 < x`, `hy : y ≠ 0`, or also `hx : x > 37`.
+`congr n` goes only `n` levels deep. This helps when `congr` goes too deep:
+for `f (g (x + y)) = f (g (y + x))`, `congr` gives the goals `x = y` and `y = x`,
+which may be false, while `congr 2` gives the goal `x + y = y + x`.
 
-What `positivity` does **not** do: it does not reason with inequalities in general.
-For example, from `-1 < x` and `2 < y` it cannot show `0 < x + y`, although this is true
-(use `linarith` for such goals). And it fails on goals of other forms, e.g. `a ≤ b`.
-
-`positivity [h₁, h₂]` first adds the facts `h₁`, `h₂` as hypotheses and then runs
-`positivity`.
-
-**Official source.** Mathlib's file `Mathlib/Tactic/Positivity/Core.lean`
-(search for `syntax (name := positivity)`): "`positivity` solves goals of the form `0 ≤ x`,
-`0 < x` and `x ≠ 0`. The tactic works recursively according to the syntax of the expression
-`x`, by attempting to prove subexpressions are positive/nonnegative/nonzero and combining
-this into a final proof. This tactic either closes the goal or fails."
-Documentation page:
-https://leanprover-community.github.io/mathlib4_docs/Mathlib/Tactic/Positivity/Core.html#Mathlib.Tactic.Positivity.positivity
+**Official source.** Lean's file `src/Init/Tactics.lean` (search for `syntax (name := congr)`):
+"Apply congruence (recursively) to goals of the form `⊢ f as = f bs` and `⊢ f as ≍ f bs`.
+The optional parameter is the depth of the recursive applications."
+That it tries `rfl` and `assumption` on the new goals is in `src/Lean/Meta/Tactic/Congr.lean`.
+See also the Tactic Reference of the Lean manual:
+https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#congr
 -/
 
-example (x : ℝ) : 0 < x ^ 2 + 1 := by
-  positivity    -- `x ^ 2` is nonnegative, `1` is positive, so the sum is positive
+example (f : ℕ → ℕ) (a b : ℕ) (h : a = b) : f a = f b := by
+  congr
