@@ -122,6 +122,8 @@ arbitrary `a : α` as an assumption and replace the goal with `a ∈ s ↔ a ∈
 
 -- example (s t : Set ℕ) (hst : s = t) : ( s ∩ t ) := by sorry
 
+#check Set.Subset
+
 
 example (s t : Set α) : s ∩ t ⊆ s ∪ t := by
   intro a ha
@@ -188,14 +190,17 @@ For example, mathlib contains `a * a - 1 = (a + 1) * (a - 1)` but not
 example (a : ℝ) : a * a - 1 = (a + 1) * (a - 1) := by
   exact?
 
+-- first way under the hood
 example (a : ℝ) : a * a - 1 = (a + 1) * (a - 1) := by
-  exact mul_self_sub_one a
+  rw [← (Commute.one_right a).mul_self_sub_mul_self_eq, mul_one]
 
 /-
 Search: Finally, there are search tools which function as
 a search engine for theorems and definitions in mathlib.
-Some use AI (such as LeanSearch and LeanExplore) whereas
-others perform more exact matching (such as Loogle).
+Some use AI (such as LeanSearch, \url{https://leansearch.net},
+and LeanExplore, \url{https://www.leanexplore.com})
+whereas others perform more exact matching
+(such as Loogle, \url{https://loogle.lean-lang.org}).
 -/
 
 /-
@@ -209,11 +214,23 @@ section
 
 variable (s t u v : Set α)
 
-example : s ⊆ s := by
-  sorry
+example : s ⊆ t → t ⊆ u → s ⊆ u :=
+  -- apply?
+  fun h₁ h₂ =>
+  (Set.mem_powerset_iff s u).mp fun ⦃a⦄ a_1 ↦ h₂ (h₁ a_1)
 
 example : s ⊆ t → t ⊆ u → s ⊆ u := by
-  sorry
+  intro h₁ h₂
+  exact Trans.simple h₁ h₂
+
+example : s ⊆ t → t ⊆ u → s ⊆ u :=
+  fun h₁ h₂ => Trans.simple h₁ h₂
+
+example : s ⊆ t → t ⊆ u → s ⊆ u := Set.Subset.trans
+
+#check subset_trans
+#check Set.Subset.trans
+
 
 example : s ⊆ s ∪ t := by
   sorry
@@ -248,10 +265,6 @@ theorem fact0 (P Q R : Prop) (hPQ: P ↔ Q) (hQR: Q ↔ R) : (P ↔ R)  := by
 theorem fact1 : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
   rfl
 
-theorem fact2a : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
-  change Set.Subset s t ↔ _
-  rw [Set.Subset]
-
 theorem fact2b : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
   dsimp [LE.le]
   rw [Set.Subset]
@@ -261,66 +274,42 @@ theorem fact3 : s ⊆ t ↔ ∀ a, a ∈ s → a ∈ t := by
   dsimp only
   rw [Set.Subset]
 
-
 theorem unproven_fact : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
   -- rw [Set.Subset]
+
   sorry
-
-
-example : s ⊆ t → t ⊆ s → s = t := by
-  intro hst
-  intro hts
-  ext x
-  constructor
-  ·
-    apply hst
-
-    -- have fact1 : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
-    --   rfl
-    -- intro hxs
-    -- apply fact1.mp
-    -- exact hst
-    -- exact hxs
-
-  ·
-    sorry
-  -- sorry
 
 example : s ∪ s = s := by
-  sorry
+  simp only [Set.union_self]
 
-example : s ∩ s = s := by
-  sorry
+example : s ∪ s = s := Set.union_self s
 
-example : s ∪ ∅ = s := by
-  sorry
+example : s ∩ s = s := Set.inter_self s
 
-example : s ∪ Set.univ = Set.univ := by
-  sorry
+example : s ∪ ∅ = s := Set.union_empty s
 
-example : s ∩ ∅ = ∅ := by
-  sorry
+example : s ∪ Set.univ = Set.univ := Set.union_univ s
 
-example : s ∩ Set.univ = s := by
-  sorry
+example : s ∩ ∅ = ∅ := Set.inter_empty s
 
-example : s ∪ t = t ∪ s := by
-  sorry
+example : s ∩ Set.univ = s := Set.inter_univ s
 
-example : s ∩ t = t ∩ s := by
-  sorry
+example : s ∪ t = t ∪ s := Set.union_comm _ _
 
-example : s ∪ t ∩ u = (s ∪ t) ∩ (s ∪ u) := by
-  sorry
+example : s ∩ t = t ∩ s := Set.inter_comm s t
 
-example : s ∩ (t ∪ u) = s ∩ t ∪ s ∩ u := by
-  sorry
+example : s ∪ (t ∩ u) = (s ∪ t) ∩ (s ∪ u) :=
+  Set.union_inter_distrib_left s t u
+
+
+example : s ∩ (t ∪ u) = (s ∩ t) ∪ (s ∩ u) :=
+  Set.inter_union_distrib_left s t u
 
 example : (s ∪ t)ᶜ = sᶜ ∩ tᶜ := by
-  sorry
+  exact Set.compl_union s t
 
-example : (s ∩ t)ᶜ = sᶜ ∪ tᶜ := by
-  sorry
+example : (s ∩ t)ᶜ = sᶜ ∪ tᶜ :=
+  Set.compl_inter s t
 
 end
 

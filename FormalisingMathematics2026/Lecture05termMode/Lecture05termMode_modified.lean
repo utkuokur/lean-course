@@ -214,3 +214,20 @@ example : ((Q → P) → P) → (Q → R) → (R → P) → P :=
 
 example (α : Type*) (P : α → Prop) (h : ¬ ∃ a : α, P a) : ∀ a : α, ¬ P a := by
   sorry
+
+variable (α : Type*)
+variable (s t u v : Set α)
+
+
+
+-- * `exact h` can be replaced by `refine h`
+-- * `intro h` can be replaced by `refine fun h ↦ ?_`
+-- * `apply h` can be replaced by `refine h ?_`
+-- * `left` can be replaced by `refine Or.inl ?_`
+-- * `right` can be replaced by `refine Or.inr ?_`
+-- * `constructor` can be replaced by `refine ⟨?_, ?_⟩`
+-- * `use a` can be replaced by `refine ⟨a, ?_⟩`
+-- * `rfl` can be replaced by `refine rfl`
+
+example : s ⊆ t → t ⊆ u → s ⊆ u :=
+  fun  h₁ h₂ => (fun a ha ↦ (h₂ (h₁ ha)))

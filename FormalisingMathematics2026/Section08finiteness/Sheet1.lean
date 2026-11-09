@@ -51,8 +51,7 @@ example (X : Type) (S : Set X) (hS : S.Finite) : S = S := by
 -- How would you find out the name of the lemma saying that the union of two finite
 -- sets is finite?
 example (X : Type) (S : Set X) (T : Set X) (hs : Set.Finite S) (ht : T.Finite) :
-    (S ∪ T).Finite := by
-  sorry
+    (S ∪ T).Finite := by exact Set.Finite.union hs ht
 
 /-
 But Lean has another way to do finite subsets.
