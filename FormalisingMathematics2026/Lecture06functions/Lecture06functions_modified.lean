@@ -317,8 +317,17 @@ section
 
 variable (f : α → β) (g : β → γ) (s : Set α) (t : Set β) (u : Set γ)
 
+-- `b ∈ f '' s` is definitionally equal to `∃ a : α, a ∈ s ∧ f a = b`.
+-- `a ∈ f⁻¹' s` is definitionally equal to `f a ∈ s`.
+
 example : s ⊆ f ⁻¹' (f '' s) := by
-  sorry
+  intro x hx
+  -- change x ∈ Set.preimage f (f '' s)
+  rw [Set.preimage]
+  simp only [Set.mem_image, Set.mem_ofPred_eq]
+  use x
+
+example : s ⊆ f ⁻¹' (f '' s) := Set.subset_preimage_image f s
 
 example : f '' (f ⁻¹' t) ⊆ t := by
   sorry

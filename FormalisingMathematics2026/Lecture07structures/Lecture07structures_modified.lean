@@ -98,13 +98,14 @@ theorem Bijective.comp (hg : Bijective g) (hf : Bijective f) :
   rcases hf with ⟨hf_inj, hf_surj⟩
   rcases hg with ⟨hg_inj, hg_surj⟩
   constructor
-  · exact hg_inj.comp hf_inj
+  ·
+    exact hg_inj.comp hf_inj
   · exact hg_surj.comp hf_surj
 
 /-
 Notice that we could write `hg_inj.comp hf_inj` and `hg_surj.comp hf_surj`
 instead of `Injective.comp hg_inj hf_inj` and `Surjective.comp hg_surj hf_surj`.
-This is called dot-notation. In this case, `hg_inj` has type `Injective f`, so
+This is called dot-notation. In this case, `hg_inj` has type `Injective g`, so
 `hg_inj.comp` tells Lean to look for a theorem called `Injective.comp`.
 -/
 
@@ -123,13 +124,39 @@ theorem Surjective.of_comp (hgf : Surjective (g ∘ f)) : Surjective g := by
 Here are two more examples of basic API lemmas as examples for you to try.
 -/
 
+
+-- grind?
+
+
 theorem Injective.of_comp_right (hgf : Injective (g ∘ f)) (hf : Surjective f) :
     Injective g := by
-  sorry
+  -- change ∀ a b : β, g a = g b → a = b
+  -- change ∀ a b : α, (g ∘ f) a = (g ∘ f) b → a = b at hgf
+  intro a b hg
+
+  -- grind?
+  obtain ⟨ x, hx ⟩ := hf a
+  obtain ⟨ y, hy ⟩ := hf b
+
+  rw [<-hx, <-hy] at hg ⊢
+  specialize hgf x y hg
+  subst hgf
+  rfl
+
 
 theorem Surjective.of_comp_left (hgf : Surjective (g ∘ f)) (hg : Injective g) :
     Surjective f := by
-  sorry
+  intro b
+  have := g b
+  obtain ⟨ x, hx ⟩ := hgf (g b)
+  rw [Function.comp_apply] at hx
+  have h₁ := hg (f x) b hx
+  use x
+
+-- /-- A function `f : α → β` is injective if `f x = f y` implies `x = y`. -/
+-- def Injective (f : α → β) : Prop :=
+--   ∀ a b : α, f a = f b → a = b
+
 
 /-
 A predicate `Bijective` on functions `f : α → β` is one possible way
@@ -151,9 +178,9 @@ structure BundledBij (α β : Type*) where
   f : α → β
   hf : Bijective f
 
-#check BundledBij
-#check BundledBij.f
-#check BundledBij.hf
+-- #check BundledBij
+-- #check BundledBij.f
+-- #check BundledBij.hf
 
 /-
 This defines a type `BundledBij α β` whose terms consist of a pair of a
@@ -187,12 +214,14 @@ constructor, whose arguments have names, called fields. For example,
 -/
 
 -- #check BundledBij.rec
+-- #check BundledBij.trans
 
 /-
 Defining the inverse bijection `BundledBij.symm` is not so easy,
 and would end up being hard to work with due to bad definitional equality.
 A better approach is to bundle the inverse function into the structure itself.
 -/
+-- #check Equiv
 
 /-- An equivalence consisting of an inverse pair of functions. -/
 structure MyEquiv (α β : Type*) where
@@ -253,8 +282,56 @@ bijective functions. Proving that an equivalence is a bijective function is
 not so hard, and is left as an example for you to try.
 -/
 
+
+/-- An equivalence consisting of an inverse pair of functions. -/
+structure MyEquiv' (α β : Type*) where
+  toFun : α → β
+  invFun : β → α
+  left_inv : invFun ∘ toFun = id
+  right_inv : toFun ∘ invFun = id
+
+
+-- theorem Injective.of_comp (hgf : Injective (g ∘ f)) : Injective f := by
+--   intro a b hf
+--   apply hgf
+--   rw [Function.comp_apply, Function.comp_apply, hf]
+
+
+
 theorem MyEquiv.bijective (e : MyEquiv α β) : Bijective e.toFun := by
-  sorry
+  constructor
+  ·
+    exact Injective.of_comp (e.left_inv ▸ injective_id)
+
+    -- have h₁ := e.left_inv
+    -- have h₂ : Injective (e.invFun ∘ e.toFun) := by
+    --   rw [h₁]
+    --   exact injective_id
+    -- have h₃ := Injective.of_comp h₂
+    -- exact h₃
+
+  ·
+
+    -- have h₁ := e.right_inv
+    -- have h₂ : Surjective (e.toFun ∘ e.invFun) := by
+    --   rw [h₁]
+    --   exact surjective_id
+    -- have h₃ := Surjective.of_comp h₂
+    -- exact h₃
+
+    exact Surjective.of_comp (e.right_inv ▸ surjective_id)
+
+theorem MyEquiv.bijective₂ (e : MyEquiv α β) : Bijective e.toFun := by
+  exact ⟨ Injective.of_comp (e.left_inv ▸ injective_id),
+        Surjective.of_comp (e.right_inv ▸ surjective_id) ⟩
+
+theorem MyEquiv.bijective₃ (e : MyEquiv α β) : Bijective e.toFun :=
+  ⟨ Injective.of_comp (e.left_inv ▸ injective_id),
+    Surjective.of_comp (e.right_inv ▸ surjective_id) ⟩
+
+
+-- theorem MyEquiv.bijective₄ (e : MyEquiv α β) : Bijective e.invFun := sorry
+
 
 /-
 Producing an equivalence from a bijective function is more difficult.
@@ -281,7 +358,14 @@ theorem Bijective.exists_myEquiv (f : α → β) (hf : Bijective f) :
   { toFun := f
     invFun := g
     left_inv := by
-      sorry
+      ext a
+      rw [Function.comp_apply, id_eq]
+      have h₃ : ∀ c₁ c₂: α, f c₁ = f c₂ → c₁ = c₂  := hf_inj
+      apply h₃ (g (f a)) a
+      apply hg (f a)
     right_inv := by
-      sorry }
+      ext a
+      rw [Function.comp_apply, id_eq]
+      apply hg
+      }
   use e

@@ -73,16 +73,14 @@ example (α : Type*) (a b c : α) (hab : a = b) (hbc : b = c) : a = c := by
   rw [hab, hbc]
 
 example (α : Type*) (a b : α) (h : a = b) : b = a := by
-  -- rw [h]
-  symm
+  apply Eq.symm
+  -- symm
   exact h
-
-
-  -- sorry
 
 /-
 The tactic `rw` requires syntactic equality, not just definitional equality.
-Roughly speaking, syntactic equality means that the two sides match as written.
+Roughly speaking, two terms are syntactically equal if Lean builds the same internal expression
+for them, after expanding notation.
 -/
 
 example (z : ℝ) (h : y = z) : z = y ∧ x = y := by
@@ -235,10 +233,7 @@ theorem succ_add (a b : MyNat) : a.succ + b = (a + b).succ := by
     rw [add_zero, add_zero]
   | succ n ih =>
     rw [add_succ, add_succ]
-    rw [ih]
-    -- rfl
-    -- sorry
-
+    exact ih ▸ rfl
 
 theorem add_comm (a b : MyNat) : a + b = b + a := by
   sorry

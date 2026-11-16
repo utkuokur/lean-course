@@ -291,6 +291,137 @@ theorem choose_example (X Y : Type) (P : X → Y → Prop) (h : ∀ x, ∃ y, P 
 -- #print axioms choose_example
 
 /-
+## `fun_prop`
+
+**Summary.** `fun_prop` proves that a function has a property such as
+`Continuous`, `Differentiable` or `Measurable`. It splits the function into
+simple pieces (sums, products, powers, compositions, ...) and uses lemmas
+tagged `@[fun_prop]` for each piece, e.g. "a sum of continuous functions is
+continuous". If it fails with "No theorems found", the needed lemma is not
+imported or not tagged.
+
+**Official source.** Mathlib's file `Mathlib/Tactic/FunProp/Elab.lean`
+(search for `syntax (name := funPropTacStx)`):
+"`fun_prop` solves a goal of the form `P f`, where `P` is a predicate and `f` is
+a function, by decomposing `f` into a composition of elementary functions, and
+proving `P` on each of those by matching against a set of `@[fun_prop]` lemmas."
+https://leanprover-community.github.io/mathlib4_docs/Mathlib/Tactic/FunProp/Elab.html#Mathlib.Meta.FunProp.funPropTacStx
+-/
+
+example : Continuous (fun x : ℝ => x ^ 3 - x - 1) := by
+  fun_prop
+
+/-
+## `push_cast`
+
+**Summary.** A *coercion* (or *cast*) is a function that Lean inserts
+automatically to turn, e.g., a natural number `n : ℕ` into an integer or a real
+number; the Infoview shows it as `↑n`. The tactic `push_cast` moves casts inward, towards
+the variables: `↑(a + b)` becomes `↑a + ↑b`. This often makes the goal match
+the hypotheses. `push_cast at h` does the same in the hypothesis `h`.
+`norm_cast` does the opposite: it moves casts outward.
+
+**Official source.** Lean's file `src/Init/Tactics.lean`
+(search for `syntax (name := pushCast)`):
+"`push_cast` rewrites the goal to move certain coercions (*casts*) inward,
+toward the leaf nodes. [...] For example, `↑(a + b)` will be written to
+`↑a + ↑b`."
+See also the Tactic Reference of the Lean manual:
+https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#push_cast
+-/
+
+example (n : ℕ) (h : (n : ℤ) = 3) : ((n + 1 : ℕ) : ℤ) = 4 := by
+  push_cast
+  rw [h]
+  norm_num
+
+/-
+## `grw`
+
+**Summary.** `grw [h]` is `rw` for inequalities.
+Given `h : a ≤ b`, the line `grw [h]` replaces `a` with the larger
+`b`, and `grw [← h]` replaces `b` with the smaller `a`. Unlike `rw` with an
+equality, it cannot do this everywhere. As for any other tactic, the new goal
+must imply the old goal.
+
+For a goal with `≤`, this means that `grw` may only make the left-hand side
+larger or the right-hand side smaller. For example:
+- goal `a + c ≤ 5`: `grw [h]` changes the goal to `b + c ≤ 5`
+- goal `5 ≤ b + c`: `grw [← h]` changes the goal to `5 ≤ a + c`
+- goal `5 ≤ a + c`: `grw [h]` fails
+
+A minus sign swaps the two cases: for the goal `c - b ≤ 5`, replacing `b` with
+the smaller `a` makes the left-hand side larger, so `grw [← h]` works, whereas
+`grw [h]` fails.
+
+The new goal can be strictly stronger than the old goal. In fact, the new goal
+could even be false. Hence, just like the `apply` tactic, the generalized
+rewrite `grw` must be used with caution.
+
+If `h' : x = y`, then `grw [h']` works exactly like `rw [h']`. It replaces
+`x` everywhere, with no restriction on the place and no side conditions.
+Therefore, equalities and inequalities can be mixed in one call, as in
+`grw [h, h']`.
+
+**Extra features.**
+- Hypotheses: `grw [h] at hc` rewrites in a hypothesis `hc`. Here the new `hc`
+  must follow from the old one, so `grw` may only make the left-hand side
+  smaller or the right-hand side larger. For example, `grw [h] at hc` turns
+  `hc : 5 ≤ a + c` into `hc : 5 ≤ b + c`, and `grw [← h] at hc` turns
+  `hc : b + c ≤ 5` into `hc : a + c ≤ 5`.
+- Other relations: the rule can also be a strict inequality `a < b`, or
+  another relation such as `⊆`, divisibility `∣` or congruence
+  `≡ [ZMOD n]`. For example, with `h : a ≡ b [ZMOD n]`, `grw [h]` closes
+  the goal `a ^ 2 + 1 ≡ b ^ 2 + 1 [ZMOD n]`, where `rw [h]` fails.
+- Side conditions: for the goal `a * c ≤ 5`, `grw [h]` needs the step
+  `a * c ≤ b * c`, which holds only for `0 ≤ c`. Lean tries to prove `0 ≤ c`
+  by itself (for example from a hypothesis `0 ≤ c`); if it cannot, `grw` asks
+  us to prove `0 ≤ c` as an extra goal.
+- Closing the goal: at the end, `grw` tries `rfl`, just like `rw`.
+
+**Official source.** Mathlib's file `Mathlib/Tactic/GRewrite/Elab.lean`
+(search for `macro (name := grwSeq)`):
+"`grw [e₁, ..., eₙ]` uses each expression `eᵢ : Rᵢ aᵢ bᵢ` (where `Rᵢ` is any
+two-argument relation) as a generalized rewrite rule on the main goal, replacing
+occurrences of `aᵢ` with `bᵢ`, then tries to close the main goal by "cheap"
+(reducible) `rfl`."
+https://leanprover-community.github.io/mathlib4_docs/Mathlib/Tactic/GRewrite/Elab.html#Mathlib.Tactic.GRewrite.grwSeq
+-/
+
+example (a b c : ℝ) (h : a ≤ b) (hy : b ≤ 2) (hb : b + c ≤ 5) : a + c ≤ 5 := by
+  grw [h]
+  /- here, Lean proves the intermediary step `a + c ≤ b + c` using Mathlib lemmas. -/
+  exact hb
+
+/-
+## `grind`
+
+**Summary.** `grind` is a strong automatic tactic. It argues by contradiction:
+it assumes the negation of the goal and collects facts until it reaches `False`.
+It combines several methods: from `a = b` it concludes `f a = f b`
+(congruence closure), it applies lemmas tagged `@[grind]`, it splits into cases,
+and it solves linear arithmetic and ring equations.
+Its arithmetic is linear: it treats e.g. `x ^ 2` as an unknown number, so it
+fails on `0 ≤ x ^ 2`. If `grind` fails, its error message ("Goal diagnostics")
+lists what it found; the "assignment" lines give values for which it could not reach `False`.
+
+`grind?` is to `grind` what `simp?` is to `simp`. On success it suggests a call
+`grind only [...]` with only the lemmas it needed.
+
+**Official source.** Lean's file `src/Init/Grind/Tactics.lean`
+(search for `syntax (name := grind)`):
+"`grind` is a tactic inspired by modern SMT solvers. [...] These engines work
+together to handle equality reasoning, apply known theorems, propagate new
+facts, perform case analysis, and run specialized solvers for domains like
+linear arithmetic and commutative rings."
+See also the Tactic Reference of the Lean manual:
+https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#grind
+-/
+
+example (f : ℝ → ℝ) (x y : ℝ) (h₁ : x + y = 5) (h₂ : x - y = 1) : f x = f 3 := by
+  grind
+
+/-
 COMMANDS
 -/
 
@@ -327,3 +458,51 @@ theorem my_trans (X : Type) (s t u : Set X) (hst : s ⊆ t) (htu : t ⊆ u) : s 
   trans t
   · exact hst
   · exact htu
+
+/-
+NOTATION
+-/
+
+/-
+## `▸`
+
+**The macro `▸`.**  In term-mode, the macro `▸` works similarly to `rw`.
+We can produce this symbol by typing `\t`.
+
+In particular, if `h : a = b` and `e : P a`, then it follows that `h ▸ e : P b`.
+
+Unlike `rw`, which needs `←` for the other direction, `▸` tries both `h` and
+its reverse `b = a`.
+
+**Official source.** Lean's file `src/Lean/Parser/Term.lean` writes:
+"`h ▸ e` is a macro built on top of `Eq.rec` and `Eq.symm` definitions.
+Given `h : a = b` and `e : p a`, the term `h ▸ e` has type `p b`.
+You can also view `h ▸ e` as a "type casting" operation
+where you change the type of `e` by using `h`.
+
+The macro tries both orientations of `h`. If the context provides an
+expected type, it rewrites the expected type, else it rewrites the type of e`."
+https://leanprover-community.github.io/mathlib4_docs/Lean/Parser/Term.html#Lean.Parser.Term.subst
+-/
+
+/- The proof-term of each of the following examples is built from `Eq.rec`,
+either directly or through definitions. Note that the recursor `.rec`
+exists for any inductive type, including `Eq`.
+-/
+example (a b : ℕ) (P : ℕ → Prop) (h : a = b) (ha : P a) : P b := by
+  rw [← h]
+  exact ha
+
+example (a b : ℕ) (P : ℕ → Prop) (h : a = b) (ha : P a) : P b := Eq.subst h ha
+
+example (a b : ℕ) (P : ℕ → Prop) (h : a = b) (ha : P a) : P b := h ▸ ha
+
+example (a b : ℕ) (P : ℕ → Prop) (h : a = b) : P a = P b := congrArg P h
+
+example (a b : ℕ) (P : ℕ → Prop) (h : a = b) (ha : P a) : P b := by
+  have h_prop : P a = P b := congrArg P h
+  exact h_prop.rec ha
+
+example (a b : ℕ) (P : ℕ → Prop) (h : a = b) (ha : P a) : P b := by
+  have h_prop : P a = P b := congrArg P h
+  exact cast h_prop ha
