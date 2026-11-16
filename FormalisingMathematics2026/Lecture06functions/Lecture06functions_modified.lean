@@ -122,7 +122,7 @@ arbitrary `a : α` as an assumption and replace the goal with `a ∈ s ↔ a ∈
 
 -- example (s t : Set ℕ) (hst : s = t) : ( s ∩ t ) := by sorry
 
-#check Set.Subset
+-- #check Set.Subset
 
 
 example (s t : Set α) : s ∩ t ⊆ s ∪ t := by
@@ -153,7 +153,7 @@ the name of the desired theorem directly or within a few tries. For example,
 the triangle inequality `|a + b| ≤ |a| + |b|` is called `abs_add_le`.
 -/
 
-#check abs_add_le
+-- #check abs_add_le
 
 /-
 Tactics: Mathlib has a few tactics which help locate existing theorems.
@@ -166,8 +166,8 @@ when the right hand side is simpler than the left hand side. For example,
 `add_zero` is tagged with `@[simp]` but `add_comm` is not.
 -/
 
-#check add_zero
-#check add_comm
+-- #check add_zero
+-- #check add_comm
 
 example (a : ℝ) : a * a - 1 = (a - 1) * (a + 1) := by
   simp [sub_mul, mul_add]
@@ -256,7 +256,7 @@ example : ∅ ⊆ s := by
 example : s ⊆ Set.univ := by
   sorry
 
-#check Set.Subset
+-- #check Set.Subset
 
 theorem fact0 (P Q R : Prop) (hPQ: P ↔ Q) (hQR: Q ↔ R) : (P ↔ R)  := by
   rw [hPQ]
@@ -265,13 +265,19 @@ theorem fact0 (P Q R : Prop) (hPQ: P ↔ Q) (hQR: Q ↔ R) : (P ↔ R)  := by
 theorem fact1 : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
   rfl
 
-theorem fact2b : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
+theorem fact2 : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
   dsimp [LE.le]
   rw [Set.Subset]
+
 
 theorem fact3 : s ⊆ t ↔ ∀ a, a ∈ s → a ∈ t := by
   rw [LE.le, Set.instLE]
   dsimp only
+  rw [Set.Subset]
+
+set_option pp.notation false in
+theorem fact4 : s ⊆ t ↔ ∀ a, a ∈ s → a ∈ t := by
+  change s.Subset t ↔ ∀ a ∈ s, a ∈ t
   rw [Set.Subset]
 
 theorem unproven_fact : s ⊆ t ↔ ∀a, a ∈ s → a ∈ t := by
@@ -322,7 +328,7 @@ variable (f : α → β) (g : β → γ) (s : Set α) (t : Set β) (u : Set γ)
 
 example : s ⊆ f ⁻¹' (f '' s) := by
   intro x hx
-  -- change x ∈ Set.preimage f (f '' s)
+  change x ∈ Set.preimage f (f '' s)
   rw [Set.preimage]
   simp only [Set.mem_image, Set.mem_ofPred_eq]
   use x

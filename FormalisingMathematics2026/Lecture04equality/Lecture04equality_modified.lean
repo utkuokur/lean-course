@@ -81,6 +81,9 @@ example (α : Type*) (a b : α) (h : a = b) : b = a := by
 The tactic `rw` requires syntactic equality, not just definitional equality.
 Roughly speaking, two terms are syntactically equal if Lean builds the same internal expression
 for them, after expanding notation.
+
+To see the internal expressions, we can write
+`set_option pp.notation false in` before an example.
 -/
 
 example (z : ℝ) (h : y = z) : z = y ∧ x = y := by
